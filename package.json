@@ -1,0 +1,22 @@
+{
+  "name": "prc_automation",
+  "version": "1.0.0",
+  "description": "Automating Test Scripts for PRC",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/silverdale-muhammadmohsinmushtaq/PRC_Automation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/silverdale-muhammadmohsinmushtaq/PRC_Automation/issues"
+  },
+  "homepage": "https://github.com/silverdale-muhammadmohsinmushtaq/PRC_Automation#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.6.0"
+  }
+}
