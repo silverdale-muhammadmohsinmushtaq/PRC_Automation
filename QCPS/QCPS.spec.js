@@ -122,6 +122,25 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await expect.soft(page.locator('button[data-value="draft"][aria-current="step"]')).toHaveAttribute('aria-checked', 'true');
 	});
 
+	test('QCP14264 Verify that the user can transfer stock from In Transit to Receiving by scanning LPN using barcode operation', async () => {
+		await page.goto(process.env.SERVER_LINK);
+		await page.getByRole('option', { name: 'Barcode' }).click();
+		await page.getByRole('button', { name: 'Operations' }).click();
+		await page.locator('span.text-muted', { hasText: 'PRC Industries, Inc. NV' }).first().click();
+		await page.getByRole('button', { name: 'New' }).click();
+		await page.waitForTimeout(10000);
+		await page.keyboard.type(lpnArray[0]);
+		await page.keyboard.press('Enter');
+		await page.keyboard.type(lpnArray[1]);
+		await page.keyboard.press('Enter');
+		await page.keyboard.type(lpnArray[2]);
+		await page.keyboard.press('Enter');
+		await page.getByRole('button', { name: 'Validate' }).click();
+	});
+
+
+
+
 
 
 
