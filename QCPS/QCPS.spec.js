@@ -135,10 +135,6 @@ test.describe.serial('Odoo End-to-End QA', () => {
 
 
 
-
-
-
-
 	test.afterAll(async () => {
     	await page.goto(process.env.SERVER_LINK);
     	await page.getByRole('button', { name: 'User' }).click();
