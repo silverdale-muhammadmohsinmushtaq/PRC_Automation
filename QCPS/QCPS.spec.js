@@ -326,14 +326,31 @@ test.describe.serial('Odoo End-to-End QA', () => {
         await expect.soft(page.locator('button.o_stock_mobile_barcode')).toBeVisible();
 	});
 
+	//////////////////////////////////////////////
+	test('QCP14350 Verify the user can perform the "Move Pallet to Repair Line" operation in Barcode', async () => {
+		await page.goto(process.env.SERVER_LINK);
+		await page.getByRole('option', { name: 'Barcode' }).click();
+        await page.getByRole('button', { name: 'Operations' }).click();
+                
+        await page.getByText('NV: Move Pallet to Repair Line', { exact: true }).click();
+        await page.waitForTimeout(20000);
+        await page.getByRole('button', { name: 'New' }).click();
+        await page.waitForTimeout(30000);
+        await page.keyboard.type("PPI1-FL-ROW-10");
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(20000);
+        await page.keyboard.type(packageValue);
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(20000);
+        await page.keyboard.type("PPI1-FL-ROW-10");
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(20000);
+        await page.click('button.o_validate_page.btn.btn-primary');
+        await page.waitForTimeout(30000);
+        await expect.soft(page.locator('button.o_stock_mobile_barcode')).toBeVisible();
+	});
 
-
-
-
-
-
-
-
+	/////////////////////////////////////////////
 
 
 	test.afterAll(async () => {
