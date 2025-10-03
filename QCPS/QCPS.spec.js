@@ -45,6 +45,8 @@ test.describe.serial('Odoo End-to-End QA', () => {
   		await page.getByRole('button', { name: 'Close' }).click();
 		await page.click('xpath=/html/body/header/nav/div[2]/a[2]');
 		await page.click('xpath=/html/body/div[1]/div/div[2]/div/table/tbody/tr[1]/td[2]');
+		await page.click('button[name="action_fail"]');
+		await page.waitForTimeout(2000);
 		// await expect.soft(page.locator('button[data-value=\"draft\"][aria-current=\"step\"]')).toHaveAttribute('aria-checked', 'true');
 		// await page.click('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div[1]/div[1]/button[1]')
 		// await page.waitForSelector('button[data-value="done"][aria-current="step"]', { timeout: 100000 });
@@ -65,6 +67,8 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await page.click('xpath=/html/body/header/nav/div[2]/a[2]');
 		await page.click('xpath=/html/body/div[1]/div/div[2]/div/table/tbody/tr[1]/td[2]');
 		await expect.soft(page.locator('button[data-value=\"draft\"][aria-current=\"step\"]')).toHaveAttribute('aria-checked', 'true');
+		await page.click('button[name="action_fail"]');
+		await page.waitForTimeout(2000);
 		// await page.click('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div[1]/div[1]/button[1]')
 		// await page.waitForSelector('button[data-value="done"][aria-current="step"]', { timeout: 100000 });
 		// await expect.soft(page.locator('button[data-value="done"][aria-current="step"]')).toHaveAttribute('aria-checked', 'true');
@@ -285,7 +289,7 @@ test.describe.serial('Odoo End-to-End QA', () => {
   		await page.getByRole('cell', { name: lpnArray[0] }).click();
   		await expect.soft(page.locator('button[data-value="confirmed"][aria-current="step"]')).toHaveAttribute('aria-checked', 'true');
 		await expect(page.locator('button[name="action_open_quality_checks"]')).toBeVisible();
-		await expect(page.locator('tr.o_data_row.o_row_draggable')).toBeVisible();
+		await expect(page.locator('tr.o_data_row.o_row_draggable').first()).toBeVisible();
 	});
 
 	test('QCP14344 Verify the user can create "New" transfer for NV warehouse in Barcode', async () => {
