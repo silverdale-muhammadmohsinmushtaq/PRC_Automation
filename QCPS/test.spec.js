@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { handleRepairShopWorkcenterPopup, scanInRepairShop } from './utils/popup';
 
 test('QCP14264 Verify that the user can transfer stock from In Transit to Receiving by scanning LPN using barcode operation', async ({page}) => {
         await page.goto("https://prcstaging.silverdale.us/odoo");
@@ -6,19 +7,18 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
     	await page.locator("//input[@name='password']").fill("Silverdale_35693569");
         await page.getByRole('button', { name: 'Log in', exact: true }).click();
         await page.getByText('Repair Shop', { exact: true }).click();
-		// If the "Select Work Centers..." popup appears on first visit, select all checkboxes and confirm
-		const heading = page.getByRole('heading', { name: 'Select Work Centers for this station' });
-		const popupAppeared = await heading.waitFor({ state: 'visible', timeout: 5000 }).then(() => true).catch(() => false);
-
-		if (popupAppeared) {
-			const checkboxes = page.locator('div.o_repair_workcenter_dialog input.form-check-input');
-			const count = await checkboxes.count();
-			for (let i = 0; i < count; i++) {
-				await checkboxes.nth(i).scrollIntoViewIfNeeded();
-				await checkboxes.nth(i).setChecked(true);
-			}
-			await page.getByRole('button', { name: 'Confirm', exact: true }).click();
-		}
+		await handleRepairShopWorkcenterPopup(page, { timeout: 5000, checkAll: true });
+		await page.goto("https://prcstaging.silverdale.us/odoo");
+		await page.getByText('Repair Shop', { exact: true }).click();
+		const searchBox = page.getByRole('searchbox', { name: 'Search...' });
+		const lpn = 'afs2MOHSIN11txyza';
+		await searchBox.click();
+		await searchBox.fill(lpn);
+		await page.keyboard.press('Enter');
+		const recordCard = page.locator('div.o_repair_display_record').filter({ hasText: lpn });
+		await recordCard.waitFor({ state: 'visible', timeout: 15000 });
+		await recordCard.getByRole('button', { name: 'LEVEL 1' }).click();
+		
 
 });
 

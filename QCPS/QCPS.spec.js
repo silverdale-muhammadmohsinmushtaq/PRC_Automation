@@ -1,4 +1,5 @@
 require('dotenv').config();
+import { handleRepairShopWorkcenterPopup, scanInRepairShop } from './utils/popup';
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
@@ -349,6 +350,24 @@ test.describe.serial('Odoo End-to-End QA', () => {
         await page.waitForTimeout(30000);
         await expect.soft(page.locator('button.o_stock_mobile_barcode')).toBeVisible();
 	});
+
+
+	test('Verify the user can search the LPN in Repair Shop', async ({page}) => {
+        await page.goto(process.env.SERVER_LINK);
+        await page.getByText('Repair Shop', { exact: true }).click();
+		await handleRepairShopWorkcenterPopup(page, { timeout: 5000, checkAll: true });
+		await page.goto("https://prcstaging.silverdale.us/odoo");
+		await page.getByText('Repair Shop', { exact: true }).click();
+		const searchBox = page.getByRole('searchbox', { name: 'Search...' });
+		await searchBox.click();
+		await searchBox.fill(lpnArray[1]);
+		await page.keyboard.press('Enter');
+		await page.waitForTimeout(20000);
+		
+
+	});
+
+
 
 	/////////////////////////////////////////////
 
