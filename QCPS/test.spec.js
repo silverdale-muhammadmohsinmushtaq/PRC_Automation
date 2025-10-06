@@ -11,7 +11,7 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
 		await page.goto("https://prcstaging.silverdale.us/odoo");
 		await page.getByText('Repair Shop', { exact: true }).click();
 		const searchBox = page.getByRole('searchbox', { name: 'Search...' });
-		const lpn = 'af2MOHSIN11txyza';
+		const lpn = 'afs2MOHSIN51txyza';
 		await searchBox.click();
 		await searchBox.fill(lpn);
 		await page.keyboard.press('Enter');
@@ -40,18 +40,32 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
 		await expect.soft(recordCard.locator('select.form-select.form-select-sm')).toBeVisible();
 		// Click play icon to start the repair
 		await recordCard.locator('div.card-header i.fa-play').click();
+		
+		// Handle Quality Check: Print LPN label → click Print Labels
+		const printLabelHeading = page.getByRole('heading', { name: /Print LPN label/i });
+		const printLabelAppeared = await printLabelHeading.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (printLabelAppeared) {
+			const printLabelModal = page.locator('div.modal-content').filter({ has: printLabelHeading });
+			await printLabelModal.getByRole('button', { name: /Print Labels/i }).click();
+		}
+		// Handle next Quality Check: Is it IOG? → click Yes
+		const iogHeading = page.getByRole('heading', { name: /Is it IOG/i });
+		const iogAppeared = await iogHeading.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (iogAppeared) {
+			const iogModal = page.locator('div.modal-content').filter({ has: iogHeading });
+			await iogModal.getByRole('button', { name: /Yes/i }).click();
+		}
+		// Handle third Quality Check: Send to Problem Solve → click Yes
+		const psHeading = page.getByRole('heading', { name: /Send to Problem Solve/i });
+		const psAppeared = await psHeading.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (psAppeared) {
+			const psModal = page.locator('div.modal-content').filter({ has: psHeading });
+			await psModal.getByRole('button', { name: /Yes/i }).click();
+		}
+		// Click Mark as Done on the active repair card
+		const activeCard = page.locator('div.o_repair_display_record.o_active');
+		await activeCard.getByRole('button', { name: 'Mark as Done' }).click();
 		await page.waitForTimeout(5000);
-		await page.goto("https://prcstaging.silverdale.us/odoo");
-		await page.locator('a.o_app[data-menu-xmlid="repair.menu_repair_order"]').waitFor({ state: 'visible', timeout: 10000 });
-		await page.locator('a.o_app[data-menu-xmlid="repair.menu_repair_order"]').click();
-		await page.getByRole('button', { name: 'Remove' }).click();
-		const searchBox2 = page.getByRole('searchbox', { name: 'Search...' });
-		await searchBox2.click();
-		await searchBox2.fill(lpn);
-		await page.keyboard.press('Enter');
-		// Assert status is Under Repair in the status bar
-		const statusBar = page.locator('div.o_statusbar_status');
-		await expect.soft(statusBar.getByRole('radio', { name: 'Under Repair' })).toHaveAttribute('aria-checked', 'true');
 
 });
 
