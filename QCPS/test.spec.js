@@ -6,44 +6,19 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
     	await page.locator("//input[@name='password']").fill("Silverdale_35693569");
         await page.getByRole('button', { name: 'Log in', exact: true }).click();
         await page.getByText('Repair Shop', { exact: true }).click();
-        // Wait for the popup for up to 5 seconds, if it appears
-        const popupVisible = await page.locator('xpath=//*[@id="dialog_2"]/div/div/div/header/h4');
+		// If the "Select Work Centers..." popup appears on first visit, select all checkboxes and confirm
+		const heading = page.getByRole('heading', { name: 'Select Work Centers for this station' });
+		const popupAppeared = await heading.waitFor({ state: 'visible', timeout: 5000 }).then(() => true).catch(() => false);
 
-        if (popupVisible) {
-            // Select all checkboxes in the popup
-            const checkboxes = page.locator('.o_repair_workcenter_dialog input[type="checkbox"]');
-            const count = await checkboxes.count();
-            for (let i = 0; i < count; i++) {
-                await checkboxes.nth(i).check({ force: true });
-                await page.waitForTimeout(10000);
-            }
-            // Click the Confirm button
-        await page.waitForTimeout(10000);
-        await page.getByRole('button', { name: 'Confirm', exact: true }).click();
-        await page.waitForTimeout(10000);
-        }
-
-
-
-        
-
-
-        await page.goto("https://prcstaging.silverdale.us/odoo");
-        await page.getByText('Repair Shop', { exact: true }).click();
-        if (popupVisible) {
-            // Select all checkboxes in the popup
-            const checkboxes = page.locator('.o_repair_workcenter_dialog input[type="checkbox"]');
-            const count = await checkboxes.count();
-            for (let i = 0; i < count; i++) {
-                await checkboxes.nth(i).check({ force: true });
-                await page.waitForTimeout(10000);
-            }
-            // Click the Confirm button
-        await page.waitForTimeout(10000);
-        await page.getByRole('button', { name: 'Confirm', exact: true }).click();
-        await page.waitForTimeout(10000);
-        }
-        await page.waitForTimeout(10000);
+		if (popupAppeared) {
+			const checkboxes = page.locator('div.o_repair_workcenter_dialog input.form-check-input');
+			const count = await checkboxes.count();
+			for (let i = 0; i < count; i++) {
+				await checkboxes.nth(i).scrollIntoViewIfNeeded();
+				await checkboxes.nth(i).setChecked(true);
+			}
+			await page.getByRole('button', { name: 'Confirm', exact: true }).click();
+		}
 
 });
 
