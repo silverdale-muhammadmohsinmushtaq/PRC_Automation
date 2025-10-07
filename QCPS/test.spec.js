@@ -11,7 +11,7 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
 		await page.goto("https://prcstaging.silverdale.us/odoo");
 		await page.getByText('Repair Shop', { exact: true }).click();
 		const searchBox = page.getByRole('searchbox', { name: 'Search...' });
-		const lpn = 'HsAaS2AqK5t71txyzd';
+		const lpn = 'HDAaS2AqK5t51txyzd';
 		await searchBox.click();
 		await searchBox.fill(lpn);
 		await page.keyboard.press('Enter');
