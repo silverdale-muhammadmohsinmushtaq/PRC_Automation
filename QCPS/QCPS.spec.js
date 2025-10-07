@@ -48,12 +48,7 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await page.click('xpath=/html/body/div[1]/div/div[2]/div/table/tbody/tr[1]/td[2]');
 		await page.click('button[name="action_fail"]');
 		await page.waitForTimeout(2000);
-		// await expect.soft(page.locator('button[data-value=\"draft\"][aria-current=\"step\"]')).toHaveAttribute('aria-checked', 'true');
-		// await page.click('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div[1]/div[1]/button[1]')
-		// await page.waitForSelector('button[data-value="done"][aria-current="step"]', { timeout: 100000 });
-		// await expect.soft(page.locator('button[data-value="done"][aria-current="step"]')).toHaveAttribute('aria-checked', 'true');
-		// await page.click('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div[1]/div[2]/div/a/span')
-		// await expect.soft(page.locator('button[data-value="done"][aria-current="step"]')).toHaveAttribute('aria-checked', 'true');
+		
 	});
 
 	test('QCP14340 Verify that transfer with "In Bound Manifest" shall be created on importing the Manifest file in Amazon module', async () => {
@@ -70,11 +65,7 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await expect.soft(page.locator('button[data-value=\"draft\"][aria-current=\"step\"]')).toHaveAttribute('aria-checked', 'true');
 		await page.click('button[name="action_fail"]');
 		await page.waitForTimeout(2000);
-		// await page.click('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div[1]/div[1]/button[1]')
-		// await page.waitForSelector('button[data-value="done"][aria-current="step"]', { timeout: 100000 });
-		// await expect.soft(page.locator('button[data-value="done"][aria-current="step"]')).toHaveAttribute('aria-checked', 'true');
-		// await page.click('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div[1]/div[2]/div/a/span')
-		// await expect.soft(page.locator('button[data-value="done"][aria-current="step"]')).toHaveAttribute('aria-checked', 'true');
+		
 	});
 
 
@@ -137,30 +128,32 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await page.click('xpath=/html/body/div[1]/div/div[2]/div/article[5]/div/div[1]/span[2]');
 		
 		await page.getByRole('button', { name: 'New' }).click();
-		await page.waitForTimeout(20000);
+		await page.waitForTimeout(30000);
+		await expect.soft(page.locator('xpath=/html/body/div[1]/div/header/div[2]/div/span[2]')).toBeVisible();
+		
 		await page.keyboard.type(lpnArray[0]);
 		await page.keyboard.press('Enter');
-		await page.waitForTimeout(20000);
+		await page.waitForTimeout(10000);
 		await page.keyboard.type(lpnArray[1]);
 		await page.keyboard.press('Enter');
-		await page.waitForTimeout(20000);
+		await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[2]);
 		await page.keyboard.press('Enter');
-		await page.waitForTimeout(20000);
+		await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[3]);
 		await page.keyboard.press('Enter');
-		await page.waitForTimeout(20000);
+		await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[4]);
 		await page.keyboard.press('Enter');
-		await page.waitForTimeout(20000);
+		await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[5]);
 		await page.keyboard.press('Enter');
-		await page.waitForTimeout(20000);
+		await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[6]);
 		await page.keyboard.press('Enter');
-		await page.waitForTimeout(30000);
+		await page.waitForTimeout(5000);
 		await page.click('button.o_validate_page.btn.btn-primary');
-		await page.waitForTimeout(30000);
+		await page.waitForTimeout(20000);
 		await expect.soft(page.locator('button.o_stock_mobile_barcode')).toBeVisible();
 	});
 
@@ -239,30 +232,32 @@ test.describe.serial('Odoo End-to-End QA', () => {
         await page.click('xpath=/html/body/div[1]/div/div[2]/div/article[6]/div/div[1]/span[2]');
         await page.waitForTimeout(30000);
         await page.getByRole('button', { name: 'New' }).click();
+
         await page.waitForTimeout(30000);
+		await expect.soft(page.locator('div[name="barcode_messages"]')).toBeVisible();
         await page.keyboard.type(lpnArray[0]);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[1]);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[2]);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[3]);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[4]);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[5]);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(5000);
 		await page.keyboard.type(lpnArray[6]);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(5000);
         await page.click('xpath=/html/body/div[1]/div/footer/button[2]');
-        await page.waitForTimeout(30000);
+        await page.waitForTimeout(20000);
 		packageValue = await page.locator('span.result-package').first().textContent();
 		packageValue = packageValue.trim();
         await page.click('xpath=/html/body/div[1]/div/footer/button[3]');
@@ -313,15 +308,17 @@ test.describe.serial('Odoo End-to-End QA', () => {
         await page.waitForTimeout(30000);
         await page.getByRole('button', { name: 'New' }).click();
         await page.waitForTimeout(30000);
+		await expect.soft(page.locator('xpath=/html/body/div[1]/div/header/div[2]/div/span[2]')).toBeVisible();
+		await page.waitForTimeout(10000);
         await page.keyboard.type("NV-SORTING");
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(10000);
 		await page.keyboard.type(packageValue);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(10000);
 		await page.keyboard.type("PPI1-FL-ROW-10");
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(10000);
         await page.click('button.o_validate_page.btn.btn-primary');
         await page.waitForTimeout(30000);
         await expect.soft(page.locator('button.o_stock_mobile_barcode')).toBeVisible();
@@ -336,28 +333,29 @@ test.describe.serial('Odoo End-to-End QA', () => {
         await page.getByText('NV: Move Pallet to Repair Line', { exact: true }).click();
         await page.waitForTimeout(20000);
         await page.getByRole('button', { name: 'New' }).click();
+		
         await page.waitForTimeout(30000);
+		await expect.soft(page.locator('xpath=/html/body/div[1]/div/header/div[2]/div/span[2]')).toBeVisible();
         await page.keyboard.type("PPI1-FL-ROW-10");
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(10000);
         await page.keyboard.type(packageValue);
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
-        await page.keyboard.type("PPI1-FL-ROW-10");
+        await page.waitForTimeout(10000);
+        await page.keyboard.type("NV-LINE 1 A");
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(10000);
         await page.click('button.o_validate_page.btn.btn-primary');
         await page.waitForTimeout(30000);
         await expect.soft(page.locator('button.o_stock_mobile_barcode')).toBeVisible();
 	});
 
 
-	test('Verify the user can search the LPN in Repair Shop', async ({page}) => {
-        await page.goto(process.env.SERVER_LINK);
+	test('Verify the user can search the LPN in Repair Shop', async () => {
+		await page.goto(process.env.SERVER_LINK);
+        
         await page.getByText('Repair Shop', { exact: true }).click();
 		await handleRepairShopWorkcenterPopup(page, { timeout: 5000, checkAll: true });
-		await page.goto("https://prcstaging.silverdale.us/odoo");
-		await page.getByText('Repair Shop', { exact: true }).click();
 		const searchBox = page.getByRole('searchbox', { name: 'Search...' });
 		await searchBox.click();
 		await searchBox.fill(lpnArray[0]);
@@ -367,7 +365,7 @@ test.describe.serial('Odoo End-to-End QA', () => {
 
 	});
 
-	test('Verify the state of repair order is Under Repair when user starts the repair work order in Repair Shop', async ({page}) => {
+	test('Verify the state of repair order is Under Repair when user starts the repair work order in Repair Shop', async () => {
         await page.goto(process.env.SERVER_LINK);
         await page.getByText('Repair Shop', { exact: true }).click();
 		await handleRepairShopWorkcenterPopup(page, { timeout: 5000, checkAll: true });
@@ -422,7 +420,7 @@ test.describe.serial('Odoo End-to-End QA', () => {
         await page.waitForTimeout(5000);
 	});
 
-	test('Verify that user can perform Quality Checks in Repair Shop with Is IOG YES', async ({page}) => {
+	test('Verify that user can perform Quality Checks in Repair Shop with Is IOG YES', async () => {
         await page.goto(process.env.SERVER_LINK);
         await page.getByText('Repair Shop', { exact: true }).click();
 		await handleRepairShopWorkcenterPopup(page, { timeout: 5000, checkAll: true });
