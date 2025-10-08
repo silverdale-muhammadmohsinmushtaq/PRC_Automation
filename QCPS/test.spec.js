@@ -4,14 +4,14 @@ import { handleRepairShopWorkcenterPopup, scanInRepairShop } from './utils/popup
 test('QCP14264 Verify that the user can transfer stock from In Transit to Receiving by scanning LPN using barcode operation', async ({page}) => {
         await page.goto("https://prcstaging.silverdale.us/odoo");
     	await page.locator("//input[@name='login']").fill("pburlison@prcind.com");
-    	await page.locator("//input[@name='password']").fill("Silverdale_35693569");
+    	await page.locator("//input[@name='password']").fill("Emission9-Schnapps-Barometer");
         await page.getByRole('button', { name: 'Log in', exact: true }).click();
         await page.getByText('Repair Shop', { exact: true }).click();
 		await handleRepairShopWorkcenterPopup(page, { timeout: 5000, checkAll: true });
 		await page.goto("https://prcstaging.silverdale.us/odoo");
 		await page.getByText('Repair Shop', { exact: true }).click();
 		const searchBox = page.getByRole('searchbox', { name: 'Search...' });
-		const lpn = 'HDAaS2AqK5t51txyzd';
+		const lpn = 'LPNPMEG7264770';
 		await searchBox.click();
 		await searchBox.fill(lpn);
 		await page.keyboard.press('Enter');
@@ -53,21 +53,133 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
 		const iogAppeared = await iogHeading.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
 		if (iogAppeared) {
 			const iogModal = page.locator('div.modal-content').filter({ has: iogHeading });
-			await iogModal.getByRole('button', { name: /Yes/i }).click();
+			await iogModal.getByRole('button', { name: /No/i }).click();
 		}
-		// Handle third Quality Check: Send to Problem Solve → click Yes
-		const psHeading = page.getByRole('heading', { name: /Send to Problem Solve/i });
-		const psAppeared = await psHeading.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
-		if (psAppeared) {
-			const psModal = page.locator('div.modal-content').filter({ has: psHeading });
-			await psModal.getByRole('button', { name: /Yes/i }).click();
+		// Handle third Quality Check: Is There Something In the Box
+		const someThingInBox = page.getByRole('heading', { name: /Is there something in the box/i });
+		const someThingInBoxAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (someThingInBoxAppeared) {
+			const someThingInBoxModal = page.locator('div.modal-content').filter({ has: someThingInBox });
+			await someThingInBoxModal.getByRole('button', { name: /Yes/i }).click();
+		}
+
+		// Open TREX
+		const openTREX = page.getByRole('heading', { name: /Open T-Rex/i });
+		const openTREXAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (openTREXAppeared) {
+			const openTREXModal = page.locator('div.modal-content').filter({ has: openTREX });
+			await openTREXModal.getByRole('button', { name: /Yes/i }).click();
 		}
 
 
+		// Did T-Rex Open?
+		const didTREXOpen = page.getByRole('heading', { name: /Did T-Rex Open/i });
+		const didTREXOpenAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (didTREXOpenAppeared) {
+			const didTREXOpenModal = page.locator('div.modal-content').filter({ has: didTREXOpen });
+			await didTREXOpenModal.getByRole('button', { name: /Yes/i }).click();
+		}
+
+
+		// Did T-Rex Open?
+		const isItExpectedItem = page.getByRole('heading', { name: /Is it the expected item/i });
+		const isItExpectedItemAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (isItExpectedItemAppeared) {
+			const isItExpectedItemModal = page.locator('div.modal-content').filter({ has: isItExpectedItem });
+			await isItExpectedItemModal.getByRole('button', { name: /Yes/i }).click();
+		}
+
+
+		// Is the Item Factory Sealed?
+		const isItemFactorySealed = page.getByRole('heading', { name: /Is the Item Factory Sealed/i });
+		const isItemFactorySealedAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (isItemFactorySealedAppeared) {
+			const isItemFactorySealedModal = page.locator('div.modal-content').filter({ has: isItemFactorySealed });
+			await isItemFactorySealedModal.getByRole('button', { name: /No/i }).click();
+		}
+
+		// Does Item Need to be Destroyed?
+		const doesItemNeedToBeDestroyed = page.getByRole('heading', { name: /Does the item need to be Destroyed/i });
+		const doesItemNeedToBeDestroyedAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (doesItemNeedToBeDestroyedAppeared) {
+			const doesItemNeedToBeDestroyedModal = page.locator('div.modal-content').filter({ has: doesItemNeedToBeDestroyed });
+			await doesItemNeedToBeDestroyedModal.getByRole('button', { name: /No/i }).click();
+		}
+
+
+		// Does Item Have Scratches??
+		const doesItemHaveScratches = page.getByRole('heading', { name: /Does the item have scratches or dents larger that a badge/i });
+		const doesItemHaveScratchesAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (doesItemHaveScratchesAppeared) {
+			const doesItemHaveScratchesModal = page.locator('div.modal-content').filter({ has: doesItemHaveScratches });
+			await doesItemHaveScratchesModal.getByRole('button', { name: /No/i }).click();
+		}
+
+
+		// Did you do factory reset?
+		const didYouDoFactoryReset = page.getByRole('heading', { name: /Did you do a Factory Reset/i });
+		const didYouDoFactoryResetAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (didYouDoFactoryResetAppeared) {
+			const didYouDoFactoryResetModal = page.locator('div.modal-content').filter({ has: didYouDoFactoryReset });
+			await didYouDoFactoryResetModal.getByRole('button', { name: /No/i }).click();
+		}
+
+
+		// Does the itme work?
+		const doesItemWork = page.getByRole('heading', { name: /Does the item work/i });
+		const doesItemWorkAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (doesItemWorkAppeared) {
+			const doesItemWorkModal = page.locator('div.modal-content').filter({ has: doesItemWork });
+			await doesItemWorkModal.getByRole('button', { name: /Yes/i }).click();
+		}
+
+
+		// Does it need parts?
+		const doesItNeedParts = page.getByRole('heading', { name: /Does it need Parts/i });
+		const doesItNeedPartsAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (doesItNeedPartsAppeared) {
+			const doesItNeedPartsModal = page.locator('div.modal-content').filter({ has: doesItNeedParts });
+			await doesItNeedPartsModal.getByRole('button', { name: /Yes/i }).click();
+		}
+
+
+		// Does you have parts?
+		const doesYouHaveParts = page.getByRole('heading', { name: /Do you have parts/i });
+		const doesYouHavePartsAppeared = await someThingInBox.waitFor({ state: 'visible', timeout: 7000 }).then(() => true).catch(() => false);
+		if (doesYouHavePartsAppeared) {
+			const doesYouHavePartsModal = page.locator('div.modal-content').filter({ has: doesYouHaveParts });
+			await doesYouHavePartsModal.getByRole('button', { name: /Yes/i }).click();
+		}
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+		
 		// Click Mark as Done on the active repair card
 		const activeCard = page.locator('div.o_repair_display_record.o_active');
 		await activeCard.getByRole('button', { name: 'Mark as Done' }).click();
 		await page.waitForTimeout(5000);
+
+
+
+
+
 
 		///////////////////////////////////////////CLEANING////////////////////////////////
 		await page.goto("https://prcstaging.silverdale.us/odoo");
