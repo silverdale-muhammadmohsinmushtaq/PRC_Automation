@@ -83,4 +83,10 @@ export async function scanInRepairShop(page, code, options = {}) {
 	return true;
 }
 
-
+export async function waitForLoadingToFinish(page, timeout = 60000) {
+    const loader = page.locator('span.o_loading_indicator', { hasText: /Loading/i });
+    // If it briefly appears, wait for it to attach first (ignore if it never shows)
+    await loader.waitFor({ state: 'attached', timeout: 5000 }).catch(() => {});
+    // Then wait until it disappears
+    await loader.first().waitFor({ state: 'hidden', timeout });
+}

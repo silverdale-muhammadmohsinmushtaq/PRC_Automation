@@ -11,7 +11,7 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
 		await page.goto("https://prcstaging.silverdale.us/odoo");
 		await page.getByText('Repair Shop', { exact: true }).click();
 		const searchBox = page.getByRole('searchbox', { name: 'Search...' });
-		const lpn = 'LPNPMEL8955009';
+		const lpn = 'LPNPMEM1676459';
 		await searchBox.click();
 		await searchBox.fill(lpn);
 		await page.keyboard.press('Enter');
@@ -380,10 +380,11 @@ test('QCP14264 Verify that the user can transfer stock from In Transit to Receiv
 		//const lpnCell = page.locator('td.o_list_many2one[name="lot_id"]').filter({ hasText: lpn }).first();
 		await lpnCell.waitFor({ state: 'visible', timeout: 10000 });
 		await lpnCell.click();
-		// Assert status is Under Repair in the status bar
-		const statusBar = page.locator('div.o_statusbar_status');
-		await expect.soft(statusBar.getByRole('radio', { name: 'Repaired' })).toHaveAttribute('aria-checked', 'true');
-
+		
+		
+		// Verify Disposition is "Sellable"
+		await expect(page.locator('div[name="disposition"] .badge')).toHaveText('Sellable');
+		
 
 });
 
