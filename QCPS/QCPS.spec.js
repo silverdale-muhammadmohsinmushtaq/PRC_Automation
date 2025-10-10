@@ -929,7 +929,7 @@ test('Verify the user can complete repair operation on repair shop + Sellable di
 		
 		
 		// Verify Disposition is "Sellable"
-		await expect(page.locator('div[name="disposition"] .badge')).toHaveText('Sellable');
+		await expect.soft(page.locator('div[name="disposition"] .badge')).toHaveText('Sellable');
 });
 
 test('Verify the "Amazon Status code" on the LPN is "CPL" for Sellable disposition', async () => {
