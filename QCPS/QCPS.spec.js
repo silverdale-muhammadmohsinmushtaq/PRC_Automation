@@ -40,7 +40,9 @@ test.describe.serial('Odoo End-to-End QA', () => {
 
 	test('QCP10993 Verify user can import manifest file in amazon edi', async () => {
 		await page.goto(process.env.SERVER_LINK);
-		await page.click('//*[@id="result_app_21"]/img');
+		const amazonApp = page.getByRole('option', { name: 'Amazon', exact: true });
+		await expect(amazonApp).toBeVisible({ timeout: 15000 });
+		await amazonApp.click();
 		await page.click('xpath=/html/body/div[1]/div/div[2]/div/div[1]/article[1]/div/div[2]/div/div/button');
 		// await page.getByText('Upload your file').click();
 		//await page.pause();
@@ -56,7 +58,9 @@ test.describe.serial('Odoo End-to-End QA', () => {
 
 	test('QCP14340 Verify that transfer with "In Bound Manifest" shall be created on importing the Manifest file in Amazon module', async () => {
 		await page.goto(process.env.SERVER_LINK);
-		await page.click('//*[@id="result_app_21"]/img');
+		const amazonApp = page.getByRole('option', { name: 'Amazon', exact: true });
+		await expect(amazonApp).toBeVisible({ timeout: 15000 });
+		await amazonApp.click();
 		await page.click('xpath=/html/body/div[1]/div/div[2]/div/div[1]/article[1]/div/div[2]/div/div/button');
 		//await page.getByText('Upload your file').click();
 		//await page.pause();
@@ -74,7 +78,9 @@ test.describe.serial('Odoo End-to-End QA', () => {
 
 	test('QCP14341 Verify the user can validate the "In Bound Manifest" transfer created on importing manifest file in amazon', async () => {
 		await page.goto(process.env.SERVER_LINK);
-		await page.click('//*[@id="result_app_21"]/img');
+		const amazonApp = page.getByRole('option', { name: 'Amazon', exact: true });
+		await expect(amazonApp).toBeVisible({ timeout: 15000 });
+		await amazonApp.click();
 		await page.click('xpath=/html/body/div[1]/div/div[2]/div/div[1]/article[1]/div/div[2]/div/div/button');
 		//await page.getByText('Upload your file').click();
 		//await page.pause();
@@ -128,7 +134,13 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await page.goto(process.env.SERVER_LINK);
 		await page.getByRole('option', { name: 'Barcode' }).click();
 		await page.getByRole('button', { name: 'Operations' }).click();
-		await page.click('xpath=/html/body/div[1]/div/div[2]/div/article[5]/div/div[1]/span[2]');
+		// Click the Receipts card for NV warehouse (exact match on header + muted subtitle)
+		const nvReceiptsCard = page
+			.locator('article.o_kanban_record.o_barcode_picking_type')
+			.filter({ has: page.locator('span.text-uppercase', { hasText: /Receipts/i }) })
+			.filter({ has: page.locator('span.text-muted', { hasText: 'PRC Industries, Inc. NV' }) });
+		await nvReceiptsCard.waitFor({ state: 'visible', timeout: 15000 });
+		await nvReceiptsCard.click();
 		
 		await page.getByRole('button', { name: 'New' }).click();
 		await waitForLoadingToFinish(page);
@@ -233,7 +245,13 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await page.getByRole('option', { name: 'Barcode' }).click();
         await page.getByRole('button', { name: 'Operations' }).click();
         
-        await page.click('xpath=/html/body/div[1]/div/div[2]/div/article[6]/div/div[1]/span[2]');
+		// Click the Sorting card for NV warehouse (header + muted subtitle)
+		const nvSortingCard = page
+			.locator('article.o_kanban_record.o_barcode_picking_type')
+			.filter({ has: page.locator('span.text-uppercase', { hasText: /Sorting/i }) })
+			.filter({ has: page.locator('span.text-muted', { hasText: 'PRC Industries, Inc. NV' }) });
+		await nvSortingCard.waitFor({ state: 'visible', timeout: 15000 });
+		await nvSortingCard.click();
         await page.waitForTimeout(30000);
         await page.getByRole('button', { name: 'New' }).click();
 
@@ -308,7 +326,13 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await page.getByRole('option', { name: 'Barcode' }).click();
         await page.getByRole('button', { name: 'Operations' }).click();
         
-        await page.click('xpath=/html/body/div[1]/div/div[2]/div/article[11]/div/div[1]');
+		// Click the Move Pallet card for NV warehouse
+		const nvMovePalletCard = page
+			.locator('article.o_kanban_record.o_barcode_picking_type')
+			.filter({ has: page.locator('span.text-uppercase', { hasText: /^Move Pallet$/i }) })
+			.filter({ has: page.locator('span.text-muted', { hasText: /^PRC Industries, Inc\. NV$/ }) });
+		await expect(nvMovePalletCard).toHaveCount(1, { timeout: 15000 });
+		await nvMovePalletCard.click();
         await page.waitForTimeout(30000);
         await page.getByRole('button', { name: 'New' }).click();
         await page.waitForTimeout(30000);
@@ -385,7 +409,11 @@ test.describe.serial('Odoo End-to-End QA', () => {
 		await recordCard.getByRole('button', { name: 'LEVEL 1' }).click();
 
 		// Soft assert: user is in Level 1 work center (active LEVEL 1 button visible)
-		await expect.soft(page.locator('button.btn-light.text-nowrap.active').filter({ hasText: 'LEVEL 1' })).toBeVisible();
+		const level1Btn = page
+			.locator('div.o_repair_display_record.o_active')
+			.getByRole('button', { name: /^LEVEL 1$/ });
+		await expect(level1Btn).toBeVisible({ timeout: 10000 });
+		await expect.soft(level1Btn).toHaveClass(/(^|\s)active(\s|$)/);
 
 		// Soft assert: Work Order tile for the searched LPN is visible
 		await expect.soft(page.locator('div.o_repair_display_record').filter({ hasText: lpn })).toBeVisible();
@@ -768,7 +796,7 @@ test('Verify the user can complete repair operation on repair shop + Sellable di
 
 		// Verify parts added to the active repair tile dynamically
 		const activeTile = page.locator('div.o_repair_display_record.o_active');
-		await activeTile.waitFor({ state: 'visible', timeout: 10000 });
+		//await activeTile.waitFor({ state: 'visible', timeout: 10000 });
 		for (const productName of addedProducts) {
 			const line = activeTile.locator('li.o_repair_display.list-group-item').filter({
 				has: page.locator('span[data-tooltip="Product"]').filter({ hasText: productName })
@@ -1163,7 +1191,7 @@ test('Verify the user can complete repair operation on repair shop + Sellable di
 
 	// Verify parts added to the active repair tile dynamically
 	const activeTile = page.locator('div.o_repair_display_record.o_active');
-	await activeTile.waitFor({ state: 'visible', timeout: 10000 });
+	//await activeTile.waitFor({ state: 'visible', timeout: 10000 });
 	for (const productName of addedProducts) {
 		const line = activeTile.locator('li.o_repair_display.list-group-item').filter({
 			has: page.locator('span[data-tooltip="Product"]').filter({ hasText: productName })

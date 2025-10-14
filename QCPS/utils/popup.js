@@ -1,5 +1,5 @@
 export async function handleRepairShopWorkcenterPopup(page, options = {}) {
-	const { timeout = 5000, checkAll = true } = options;
+	const { timeout = 10000, checkAll = true } = options;
 
 	const heading = page.getByRole('heading', { name: 'Select Work Centers for this station' });
 	const appeared = await heading
@@ -12,38 +12,39 @@ export async function handleRepairShopWorkcenterPopup(page, options = {}) {
 	const modal = page.locator('div.modal-content').filter({ has: heading });
 
 	if (checkAll) {
-		const checkboxes = modal.getByRole('checkbox');
-		// Ensure checkboxes are rendered
-		await checkboxes.first().waitFor({ state: 'visible', timeout });
-		const count = await checkboxes.count();
+		// Workcenter rows provide stable handles to inputs and labels
+		const rows = modal.locator('.o_repair_workcenter_dialog .form-check');
+		await rows.first().waitFor({ state: 'visible', timeout });
+		const count = await rows.count();
 		for (let i = 0; i < count; i++) {
-			const checkbox = checkboxes.nth(i);
-			await checkbox.scrollIntoViewIfNeeded();
-			// Skip if already checked
-			if (await checkbox.isChecked()) continue;
-			// Try normal check first
+			const row = rows.nth(i);
+			const cb = row.locator('input.form-check-input');
+			const label = row.locator('label.form-check-label');
+			await label.scrollIntoViewIfNeeded();
 			try {
-				await checkbox.check();
+				await cb.setChecked(true, { force: true });
 			} catch (_) {
-				// Fallbacks: force check or click the label next to input
-				try {
-					await checkbox.check({ force: true });
-				} catch (_) {
-					const label = checkbox.locator('xpath=following-sibling::label');
-					await label.click({ force: true });
-				}
+				await label.click({ force: true });
+			}
+			if (!(await cb.isChecked())) {
+				await cb.setChecked(true, { force: true });
 			}
 		}
-		// Verify all are checked; if any remain, attempt once more using force
+		// Verify all are checked before closing
 		for (let i = 0; i < count; i++) {
-			const checkbox = checkboxes.nth(i);
-			if (!(await checkbox.isChecked())) {
-				await checkbox.check({ force: true });
+			const cb = rows.nth(i).locator('input.form-check-input');
+			if (!(await cb.isChecked())) {
+				throw new Error('Workcenter checkbox not checked');
 			}
 		}
 	}
 
 	await modal.getByRole('button', { name: 'Confirm', exact: true }).click();
+	// Ensure the popup (and any backdrop) is fully gone before continuing
+	await Promise.all([
+		modal.waitFor({ state: 'detached', timeout: 10000 }).catch(() => {}),
+		page.locator('div.modal-backdrop').first().waitFor({ state: 'detached', timeout: 10000 }).catch(() => {}),
+	]);
 	return true;
 }
 
