@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-test('Verify the user can Generate and download the "Revenue Report History"', async ({ page }) => {
+test('Verify the user can Generate and download the "Revenue Report History"', async ({ page, context }) => {
+	// Maximize browser window
+	await page.setViewportSize({ width: 1920, height: 1080 });
+	
 	// Step 1: Go to Server link
 	await page.goto("https://prcstaging.silverdale.us/odoo");
 	
@@ -11,8 +14,6 @@ test('Verify the user can Generate and download the "Revenue Report History"', a
 	
 	// Wait for login to complete and dashboard to load
 	
-	
-	// Step 3: Go to "Repairs" app
 	await page.getByRole('option', { name: 'Repairs' }).click();
 	
 	// Step 4: Click "Repair Report History" in the menu
@@ -73,3 +74,5 @@ test('Verify the user can Generate and download the "Revenue Report History"', a
 	expect(download.suggestedFilename()).toContain('.xlsx'); // Excel format
 	console.log(`Downloaded file: ${download.suggestedFilename()}`);
 });
+
+//

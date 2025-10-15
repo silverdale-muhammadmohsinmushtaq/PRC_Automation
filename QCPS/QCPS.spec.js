@@ -1617,6 +1617,39 @@ test('Verify the user can Generate and download the "Revenue Report History"', a
 
 
 
+test('Verify the user can Generate and download the "Revenue Report History', async () => {
+	await page.goto(process.env.SERVER_LINK);
+	await page.getByRole('option', { name: 'Lots/Serial Numbers' }).click();
+		await page.getByRole('button', { name: 'Remove' }).click();
+		let lpn = 'AOHSIN11B';
+		await page.getByRole('searchbox', { name: 'Search...' }).fill(lpn);
+		await page.getByRole('searchbox', { name: 'Search...' }).press('Enter');
+		await page.getByRole('cell', { name: lpn }).click();
+
+		await page.waitForTimeout(5000);
+		
+		// Step 1: Click Action button
+		await page.locator('button[data-hotkey="u"]').click();
+		
+		// Step 2: Wait for dropdown to appear and click PRINT button
+		await page.waitForSelector('.o-dropdown--menu.dropdown-menu', { state: 'visible' });
+		await page.getByRole('menuitem', { name: ' LPN LOT LABEL ZPL' }).first().click();
+		
+		// Step 3: Wait for print action to complete (label should be printed)
+		await page.waitForTimeout(2000); // Wait for print action
+		
+		// Step 4: Click Action button again
+		await page.locator('button[data-hotkey="u"]').click();
+		
+		// Step 5: Wait for dropdown to appear and click DOWNLOAD button
+		await page.waitForSelector('.o-dropdown--menu.dropdown-menu', { state: 'visible' });
+		const downloadPromise = page.waitForEvent('download');
+		await page.getByRole('menuitem', { name: ' LPN LOT LABEL ZPL' }).nth(1).click();
+		const download = await downloadPromise;
+});
+
+
+
 
 	/////////////////////////////////////////////
 
